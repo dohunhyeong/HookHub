@@ -1,30 +1,34 @@
 import pygame
-import os
+import sys
+from pathlib import Path
+
 
 def main():
     # Initialize pygame mixer
     pygame.mixer.init()
-    
-    # Check if the sound file exists
-    sound_file = "ulala.wav"
-    if not os.path.exists(sound_file):
-        print(f"Error: {sound_file} not found in current directory")
-        return
-    
+
+    # Get the path to the sound file (relative to this script)
+    script_dir = Path(__file__).parent
+    sound_file = script_dir / "ulala.wav"
+
+    # Check if the file exists
+    if not sound_file.exists():
+        print(f"Error: Sound file not found at {sound_file}")
+        sys.exit(1)
+
+    # Load and play the sound
     try:
-        # Load and play the sound
-        sound = pygame.mixer.Sound(sound_file)
+        sound = pygame.mixer.Sound(str(sound_file))
         sound.play()
-        
+
         # Wait for the sound to finish playing
         while pygame.mixer.get_busy():
             pygame.time.wait(100)
-            
-        print(f"Played {sound_file}")
-    except pygame.error as e:
+
+        print("Sound played successfully!")
+    except Exception as e:
         print(f"Error playing sound: {e}")
-    finally:
-        pygame.mixer.quit()
+        sys.exit(1)
 
 
 if __name__ == "__main__":
